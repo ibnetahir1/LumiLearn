@@ -1,0 +1,27 @@
+@LumiLearn.API_HostAddress = https://localhost:7244
+
+POST {{LumiLearn.API_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "teacher@test.com",
+  "password": "Password1!",
+  "role": "Teacher"
+}
+
+###
+
+POST {{LumiLearn.API_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "student@test.com",
+  "password": "Password1!"
+}
+
+###
+
+GET {{LumiLearn.API_HostAddress}}/api/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYmQ5ZDI1Zi1lMWI4LTRiYjgtODNiOS02ZjBkNTgzMzMyMWEiLCJlbWFpbCI6InRlYWNoZXJAdGVzdC5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImNiZDlkMjVmLWUxYjgtNGJiOC04M2I5LTZmMGQ1ODMzMzIxYSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InRlYWNoZXJAdGVzdC5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJUZWFjaGVyIiwiZXhwIjoxNzg5NDAzMjUyLCJpc3MiOiJMdW1pTGVhcm4uQXBpIiwiYXVkIjoiTHVtaUxlYXJuLkZyb250ZW5kIn0.3T-8iqmpBfIb22Htc-xnpbMGx9wXGqFajO_qxr0lWfQ
+
+###

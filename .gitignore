@@ -1,0 +1,66 @@
+# ==========================================
+# NEXT.JS / NODE DEPENDENCIES & BUILDS
+# ==========================================
+**/node_modules/
+**/.next/
+**/out/
+**/build/
+**/dist/
+
+# Next.js environment & local settings
+**/.env*.local
+**/.env.production.local
+**/.env.development.local
+**/.env.test.local
+
+# Vercel & testing coverage
+**/.vercel/
+**/coverage/
+**/.pnpm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# ==========================================
+# ASP.NET CORE / .NET
+# ==========================================
+# Build outputs & artifacts
+**/bin/
+**/obj/
+**/publish/
+
+# User-specific & local settings
+**/appsettings*.Development.json
+**/appsettings.Local.json
+**/*.user
+**/*.userosscache
+**/*.sln.docstates
+
+# IDE & Visual Studio cache files
+**/.vs/
+**/.vscode/
+**/*.suo
+**/*.userprefs
+**/mono_crash.*
+
+# NuGet Packages
+**/packages/
+!**/packages/build/
+*.nupkg
+*.snupkg
+
+# Entity Framework Core migrations / local db
+**/*.db
+**/*.db-shm
+**/*.db-wal
+
+# ==========================================
+# GENERAL & OS FILES
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.log
