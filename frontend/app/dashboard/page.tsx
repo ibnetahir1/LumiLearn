@@ -1,20 +1,25 @@
 "use client";
 
+import StudentDashboard from "@/components/dashboard/StudentDashboard";
+import TeacherDashboard from "@/components/dashboard/TeacherDashboard";
 import { apiRequest } from "@/lib/api";
 import { clearAccessToken, getAccessToken } from "@/lib/auth";
 import { User } from "@/types/user";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function DashboardPage() {
+  const router = useRouter();
+  
   const [user, setUser] = useState<User | null>(null);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadUser() {
       const token = getAccessToken();
 
       if (!token) {
-        window.location.href = "/login";
+        router.replace("/login");
         return;
       }
 
@@ -24,50 +29,46 @@ export default function DashboardPage() {
             Authorization: `Bearer ${token}`
           }
         });
-
         setUser(currentUser);
+        console.log(currentUser);
       } catch {
         clearAccessToken();
-        window.location.href = "/login";
+        router.replace("/login");
+      } finally {
+        setLoading(false);
       }
     }
 
     loadUser();
-  }, []);
+  }, [router]);
 
-  if (error) {
-    return <p>{error}</p>;
+  if (loading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center">
+        <p className="text-gray-600">Loading dashboard</p>
+      </main>
+    );
   }
 
   if (!user) {
-    return <p>Loading...</p>;
-  }
-
-  function handleLogout() {
-    clearAccessToken();
-    window.location.href = "/login";
+    return null;
   }
 
   return (
-    <main className="p-8">
-      <h1 className="text-3xl font-bold">
-        Welcome To LumiLearn
-      </h1>
+    <main className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-7xl px-6 py-10">
+        {user.roles[0] == "Teacher" && <TeacherDashboard />}
 
-      <p className="mt-4">
-        Signed in as: {user.email}
-      </p>
+        {user.roles[0] == "Student" && <StudentDashboard />}
 
-      <p className="mt-2">
-        Role: {user.roles.join(", ")}
-      </p>
-
-      <button
-        onClick={handleLogout}
-        className="mt-6 rounded-md bg-black px-4 py-2 text-white"
-      >
-        Log out
-      </button>
+        {user.roles[0] !== "Teacher" && user.roles[0] !== "Student" && (
+          <div className="rounded-xl border border-red-200 bg-red-50 p-6">
+            <p className="text-sm text-red-700">
+              Your account does not have a supported portal role.
+            </p>
+          </div>
+        )}
+      </div>
     </main>
-  )
+  );
 }

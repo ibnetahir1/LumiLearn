@@ -1,7 +1,8 @@
+import { Course } from "@/types/course";
+
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "https://localhost:7244";
 
-// TODO: change T to be a User type
 export async function apiRequest<T>(
   endpoint: string,
   options?: RequestInit
@@ -31,4 +32,8 @@ export async function apiRequest<T>(
   }
 
   return response.json();
+}
+
+export async function getCourses(options: RequestInit): Promise<Course[]> {
+  return apiRequest<Course[]>("/api/courses", options);
 }
