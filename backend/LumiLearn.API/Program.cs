@@ -59,6 +59,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddScoped<JwtTokenService>();
 
+builder.Services.AddScoped<CourseService>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowNextJS", policy =>
