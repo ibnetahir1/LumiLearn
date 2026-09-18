@@ -1,4 +1,5 @@
 ﻿using LumiLearn.API.DTO.Courses;
+using LumiLearn.API.DTO.Enrollments;
 using LumiLearn.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +13,12 @@ namespace LumiLearn.API.Controllers
     public class CoursesController : ControllerBase
     {
         private readonly CourseService _courseService;
+        private readonly EnrollmentService _enrollmentService;
 
-        public CoursesController(CourseService courseService)
+        public CoursesController(CourseService courseService, EnrollmentService enrollmentService)
         {
             _courseService = courseService;
+            _enrollmentService = enrollmentService;
         }
 
         [HttpGet]
@@ -48,6 +51,33 @@ namespace LumiLearn.API.Controllers
             var course = await _courseService.CreateCourseAsync(teacherId, request);
 
             return CreatedAtAction("CreateCourse", course);
+        }
+
+        [HttpPost("{courseId}/enroll")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult<EnrollmentResponse>> EnrollStudent(Guid courseId)
+        {
+            var studentId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (studentId == null)
+            {
+                return Unauthorized();
+            }
+            try
+            {
+                var enrollment = await _enrollmentService.EnrollStudentAsync(courseId, studentId);
+
+                if (enrollment == null)
+                {
+                    return NotFound();
+                }
+
+                return CreatedAtAction("EnrollStudent", enrollment);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
     }
 }

@@ -61,6 +61,8 @@ builder.Services.AddScoped<JwtTokenService>();
 
 builder.Services.AddScoped<CourseService>();
 
+builder.Services.AddScoped<EnrollmentService>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowNextJS", policy =>
