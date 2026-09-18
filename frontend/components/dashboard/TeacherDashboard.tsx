@@ -5,6 +5,7 @@ import { Course } from "@/types/course";
 import { useEffect, useState } from "react";
 import CourseCard from "../courses/CourseCard";
 import { getAccessToken } from "@/lib/auth";
+import Link from "next/link";
 
 export default function TeacherDashboard() {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -50,12 +51,12 @@ export default function TeacherDashboard() {
           </p>
         </div>
 
-        <button
-          type="button"
+        <Link
+          href="/teacher/courses/new"
           className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
         >
           Create Course
-        </button>
+        </Link>
       </div>
 
       {loading && (
