@@ -5,6 +5,7 @@ import { Course } from "@/types/course";
 import { useEffect, useState } from "react";
 import CourseCard from "../courses/CourseCard";
 import { getAccessToken } from "@/lib/auth";
+import Link from "next/link";
 
 export default function StudentDashboard() {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -35,19 +36,29 @@ export default function StudentDashboard() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <p className="text-sm font-medium text-blue-600">
-          Student Dashboard
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-medium text-blue-600">
+            Student Dashboard
+          </p>
 
-        <h1 className="mt-1 text-3xl font-bold text-gray-900">
-          Your Courses
-        </h1>
+          <h1 className="mt-1 text-3xl font-bold text-gray-900">
+            Your Courses
+          </h1>
 
-        <p className="mt-2 text-gray-600">
-          Continue learning and track your progress.
-        </p>
+          <p className="mt-2 text-gray-600">
+            Continue learning and track your progress.
+          </p>
+        </div>
+
+        <Link
+          href="/student/courses"
+          className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+        >
+          Browse Courses
+        </Link>
       </div>
+      
 
       {loading && (
         <div className="rounded-xl border border-gray-200 bg-white p-8 text-center">

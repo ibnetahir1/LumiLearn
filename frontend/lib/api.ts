@@ -1,7 +1,8 @@
 import { Course } from "@/types/course";
+import { EnrollmentResponse } from "@/types/enrollment-response";
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "https://localhost:7244";
+  process.env.NEXT_PUBLIC_API_URL;
 
 export async function apiRequest<T>(
   endpoint: string,
@@ -36,4 +37,12 @@ export async function apiRequest<T>(
 
 export async function getCourses(options: RequestInit): Promise<Course[]> {
   return apiRequest<Course[]>("/api/courses", options);
+}
+
+export async function getAvailableCourses(options: RequestInit): Promise<Course[]> {
+  return apiRequest<Course[]>("/api/courses/available", options);
+}
+
+export async function enrollStudent(courseId: string, options: RequestInit){
+  return apiRequest<EnrollmentResponse>(`/api/courses/${courseId}/enroll`, options);
 }

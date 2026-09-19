@@ -79,5 +79,21 @@ namespace LumiLearn.API.Controllers
                 return Conflict(new { message = ex.Message });
             }
         }
+
+        [HttpGet("available")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult<List<CourseResponse>>> GetAvailableCourses()
+        {
+            var studentId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (studentId == null)
+            {
+                return Unauthorized();
+            }
+
+            var courses = await _courseService.GetAvailableCoursesAsync(studentId);
+
+            return Ok(courses);
+        }
     }
 }

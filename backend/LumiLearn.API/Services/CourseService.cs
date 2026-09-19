@@ -75,5 +75,23 @@ namespace LumiLearn.API.Services
                 CreatedAt = course.CreatedAt
             };
         }
+
+        public async Task<List<CourseResponse>> GetAvailableCoursesAsync(string studentId)
+        {
+            return await _context.Courses.Where(c => !c.Enrollments.Any(e =>
+                                                e.StudentId == studentId &&
+                                                e.Status == "Active"))
+                                         .OrderByDescending(c => c.CreatedAt)
+                                         .Select(c => new CourseResponse
+                                         {
+                                             Id = c.Id,
+                                             Name = c.Name,
+                                             Subject = c.Subject,
+                                             Description = c.Description,
+                                             TeacherId = c.TeacherId,
+                                             CreatedAt = c.CreatedAt
+                                         })
+                                         .ToListAsync();
+        }
     }
 }
