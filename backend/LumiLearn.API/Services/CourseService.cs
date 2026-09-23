@@ -93,5 +93,49 @@ namespace LumiLearn.API.Services
                                          })
                                          .ToListAsync();
         }
+
+        public async Task<CourseResponse?> GetCourseByIdAsync(Guid courseId, string userId, string role)
+        {
+            var course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId);
+
+            if (course == null)
+            {
+                return null;
+            }
+
+            if (role == "Teacher")
+            {
+                if (course.TeacherId != userId)
+                {
+                    return null;
+                }
+            }
+            else if (role == "Student")
+            {
+                var isEnrolled = await _context.Enrollments.AnyAsync(e =>
+                                                                e.CourseId == courseId &&
+                                                                e.StudentId == userId &&
+                                                                e.Status == "Active");
+
+                if (!isEnrolled)
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            return new CourseResponse
+            {
+                Id = course.Id,
+                Name = course.Name,
+                Subject = course.Subject,
+                Description = course.Description,
+                TeacherId = course.TeacherId,
+                CreatedAt = course.CreatedAt,
+            };
+        }
     }
 }

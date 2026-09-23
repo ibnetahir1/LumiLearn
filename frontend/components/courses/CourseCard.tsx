@@ -2,13 +2,14 @@ import { Course } from "@/types/course";
 import Link from "next/link";
 
 interface CourseCardProps {
-  course: Course
+  course: Course;
+  url: string
 }
 
-export default function CourseCard({ course }: CourseCardProps) {
+export default function CourseCard({ course, url }: CourseCardProps) {
   return (
     <Link
-      href = {`/courses/${course.id}`}
+      href = {`/${url}/courses/${course.id}`}
       className="block rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
     >
       <div className="mb-3">

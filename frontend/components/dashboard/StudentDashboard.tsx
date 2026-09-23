@@ -87,7 +87,7 @@ export default function StudentDashboard() {
       {!loading && !error && courses.length > 0 && (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {courses.map((course) => (
-            <CourseCard key={course.id} course={course} />
+            <CourseCard key={course.id} course={course} url="student" />
           ))}
         </div>
       )}

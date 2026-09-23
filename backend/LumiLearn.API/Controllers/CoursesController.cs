@@ -95,5 +95,27 @@ namespace LumiLearn.API.Controllers
 
             return Ok(courses);
         }
+
+        [HttpGet("{courseId}")]
+        [Authorize(Roles = "Teacher,Student")]
+        public async Task<ActionResult<CourseResponse>> GetCourseById(Guid courseId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var role = User.FindFirstValue(ClaimTypes.Role);
+
+            if (userId == null || role == null)
+            {
+                return Unauthorized();
+            }
+
+            var course = await _courseService.GetCourseByIdAsync(courseId, userId, role);
+
+            if (course == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(course);
+        }
     }
 }

@@ -1,5 +1,6 @@
 import { Course } from "@/types/course";
 import { EnrollmentResponse } from "@/types/enrollment-response";
+import { getAccessToken } from "./auth";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL;
@@ -35,8 +36,24 @@ export async function apiRequest<T>(
   return response.json();
 }
 
+function getHeaders(): RequestInit {
+  const token = getAccessToken();
+  const options = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
+
+  return options;
+}
+
 export async function getCourses(options: RequestInit): Promise<Course[]> {
   return apiRequest<Course[]>("/api/courses", options);
+}
+
+export async function getCourse(courseId: string): Promise<Course> {
+  const options = getHeaders();
+  return apiRequest<Course>(`/api/courses/${courseId}`, options);
 }
 
 export async function getAvailableCourses(options: RequestInit): Promise<Course[]> {
