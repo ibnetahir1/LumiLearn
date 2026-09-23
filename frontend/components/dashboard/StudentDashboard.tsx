@@ -4,7 +4,6 @@ import { getCourses } from "@/lib/api";
 import { Course } from "@/types/course";
 import { useEffect, useState } from "react";
 import CourseCard from "../courses/CourseCard";
-import { getAccessToken } from "@/lib/auth";
 import Link from "next/link";
 
 export default function StudentDashboard() {
@@ -14,15 +13,8 @@ export default function StudentDashboard() {
 
   useEffect(() => {
     async function loadCourses() {
-      const token = getAccessToken();
-      
       try {
-        const options = {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        };
-        const data = await getCourses(options);
+        const data = await getCourses();
         setCourses(data);
       } catch {
         setError("Unable to load your courses.");

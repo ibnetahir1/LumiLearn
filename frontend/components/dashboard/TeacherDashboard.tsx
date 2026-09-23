@@ -14,15 +14,8 @@ export default function TeacherDashboard() {
 
   useEffect(() => {
     async function loadCourses() {
-      const token = getAccessToken();
-
       try {
-        const options = {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        };
-        const data = await getCourses(options);
+        const data = await getCourses();
         setCourses(data);
       } catch {
         setError("Unable to load your courses.");

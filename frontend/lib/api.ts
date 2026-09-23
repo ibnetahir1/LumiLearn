@@ -5,6 +5,16 @@ import { getAccessToken } from "./auth";
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL;
 
+export class ApiError extends Error {
+  status: number;
+
+  constructor(status: number, message: string) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
+
 export async function apiRequest<T>(
   endpoint: string,
   options?: RequestInit
@@ -30,7 +40,7 @@ export async function apiRequest<T>(
       // Response did not contain JSON.
     }
 
-    throw new Error(message);
+    throw new ApiError(response.status, message);
   }
 
   return response.json();
@@ -47,7 +57,8 @@ function getHeaders(): RequestInit {
   return options;
 }
 
-export async function getCourses(options: RequestInit): Promise<Course[]> {
+export async function getCourses(): Promise<Course[]> {
+  const options = getHeaders();
   return apiRequest<Course[]>("/api/courses", options);
 }
 
@@ -56,10 +67,16 @@ export async function getCourse(courseId: string): Promise<Course> {
   return apiRequest<Course>(`/api/courses/${courseId}`, options);
 }
 
-export async function getAvailableCourses(options: RequestInit): Promise<Course[]> {
+export async function getAvailableCourses(): Promise<Course[]> {
+  const options = getHeaders();
   return apiRequest<Course[]>("/api/courses/available", options);
 }
 
-export async function enrollStudent(courseId: string, options: RequestInit){
+export async function enrollStudent(courseId: string){
+  let options = getHeaders();
+  options = {
+    method: "POST",
+    ...options
+  }
   return apiRequest<EnrollmentResponse>(`/api/courses/${courseId}/enroll`, options);
 }

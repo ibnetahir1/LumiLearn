@@ -2,7 +2,6 @@
 
 import CourseCard from "@/components/courses/CourseCard";
 import { getAvailableCourses } from "@/lib/api";
-import { getAccessToken } from "@/lib/auth";
 import { Course } from "@/types/course";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -16,15 +15,9 @@ export default function StudentCoursesPage() {
     // TODO: cache courses so we can use it between components instead of 
     // making too many api call?
     async function loadCourses() {
-      const token = getAccessToken();
-
       try {
-        const options = {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        };
-        const courses = await getAvailableCourses(options);
+        
+        const courses = await getAvailableCourses();
         setCourses(courses);
       } catch {
         setError("Unable to load courses.");
