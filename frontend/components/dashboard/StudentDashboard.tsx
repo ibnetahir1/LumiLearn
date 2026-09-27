@@ -39,7 +39,7 @@ export default function StudentDashboard() {
           </h1>
 
           <p className="mt-2 text-gray-600">
-            Continue learning and track your progress.
+            Continue learning and track your progress!
           </p>
         </div>
 
