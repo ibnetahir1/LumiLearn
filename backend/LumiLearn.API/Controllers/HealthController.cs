@@ -11,7 +11,7 @@ namespace LumiLearn.API.Controllers
         {
             return Ok(new
             {
-                status = "ok",
+                status = "OK",
                 application = "LumiLearn.API"
             });
         }
