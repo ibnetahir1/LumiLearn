@@ -27,6 +27,7 @@
 **/bin/
 **/obj/
 **/publish/
+**/PublishProfiles/
 
 # User-specific & local settings
 **/appsettings*.Development.json
@@ -64,3 +65,4 @@
 ehthumbs.db
 Thumbs.db
 *.log
+**/LumiLearn.API.http
