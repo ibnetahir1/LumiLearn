@@ -21,5 +21,7 @@ namespace LumiLearn.API.Domain.Entities
         public ApplicationUser Teacher { get; set; } = null!;
 
         public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+
+        public ICollection<Module> Modules { get; set; } = new List<Module>();
     }
 }

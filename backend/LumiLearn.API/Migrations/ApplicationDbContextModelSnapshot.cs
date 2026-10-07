@@ -155,6 +155,36 @@ namespace LumiLearn.API.Migrations
                     b.ToTable("Enrollments");
                 });
 
+            modelBuilder.Entity("LumiLearn.API.Domain.Entities.Module", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId", "DisplayOrder")
+                        .IsUnique();
+
+                    b.ToTable("Modules");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -318,6 +348,17 @@ namespace LumiLearn.API.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("LumiLearn.API.Domain.Entities.Module", b =>
+                {
+                    b.HasOne("LumiLearn.API.Domain.Entities.Course", "Course")
+                        .WithMany("Modules")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -379,6 +420,8 @@ namespace LumiLearn.API.Migrations
             modelBuilder.Entity("LumiLearn.API.Domain.Entities.Course", b =>
                 {
                     b.Navigation("Enrollments");
+
+                    b.Navigation("Modules");
                 });
 #pragma warning restore 612, 618
         }

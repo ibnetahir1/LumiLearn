@@ -13,6 +13,7 @@ namespace LumiLearn.API.Data
 
         public DbSet<Course> Courses => Set<Course>();
         public DbSet<Enrollment> Enrollments => Set<Enrollment>();
+        public DbSet<Module> Modules => Set<Module>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -69,6 +70,33 @@ namespace LumiLearn.API.Data
                       .IsUnique();
 
                 entity.HasIndex(e => e.StudentId);
+            });
+
+            builder.Entity<Module>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Title)
+                      .IsRequired()
+                      .HasMaxLength(50);
+
+                entity.Property(e => e.Description)
+                      .IsRequired()
+                      .HasMaxLength(2000);
+
+                entity.Property(e => e.DisplayOrder)
+                      .IsRequired();
+
+                entity.Property(e => e.CourseId)
+                      .IsRequired();
+
+                entity.HasOne(e => e.Course)
+                      .WithMany(e => e.Modules)
+                      .HasForeignKey(e => e.CourseId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasIndex(e => new { e.CourseId, e.DisplayOrder })
+                      .IsUnique();
             });
         }
     }
