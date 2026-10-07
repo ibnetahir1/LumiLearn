@@ -26,7 +26,6 @@ namespace LumiLearn.API.Services
             var lastModule = await _context.Modules.Where(m => m.CourseId == courseId)
                                                    .OrderBy(m => m.DisplayOrder)
                                                    .LastOrDefaultAsync();
-                                             
 
             var module = new Module
             {
@@ -49,6 +48,54 @@ namespace LumiLearn.API.Services
                 Description = module.Description,
                 DisplayOrder = module.DisplayOrder
             };
+        }
+
+        public async Task<List<ModuleResponse>?> GetAllModulesAsync(string userId, string role, Guid courseId)
+        {
+            var course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId);
+
+            if (course == null)
+            {
+                return null;
+            }
+
+            if (role == "Teacher")
+            {
+                if (course.TeacherId != userId)
+                {
+                    return null;
+                }
+            }
+            else if (role == "Student")
+            {
+                var isEnrolled = await _context.Enrollments.AnyAsync(e =>
+                                                                     e.StudentId == userId &&
+                                                                     e.CourseId == courseId &&
+                                                                     e.Status == "Active");
+
+                if (!isEnrolled)
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            var result = await _context.Modules.Where(m => m.CourseId == courseId)
+                                               .OrderBy(m => m.DisplayOrder)
+                                               .Select(m => new ModuleResponse
+                                               {
+                                                   Id = m.Id,
+                                                   CourseId = m.CourseId,
+                                                   Title = m.Title,
+                                                   Description = m.Description,
+                                                   DisplayOrder = m.DisplayOrder
+                                               })
+                                               .ToListAsync();
+
+            return result;
         }
     }
 }

@@ -142,5 +142,26 @@ namespace LumiLearn.API.Controllers
 
             return CreatedAtAction("CreateModule", module);
         }
+
+        [HttpGet("{courseId}/modules")]
+        public async Task<ActionResult<List<ModuleResponse>>> GetAllModules(Guid courseId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var role = User.FindFirstValue(ClaimTypes.Role);
+
+            if (userId == null || role == null)
+            {
+                return Unauthorized();
+            }
+
+            var modules = await _moduleService.GetAllModulesAsync(userId, role, courseId);
+
+            if (modules == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(modules);
+        }
     }
 }
