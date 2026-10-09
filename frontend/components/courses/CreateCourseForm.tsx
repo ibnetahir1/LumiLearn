@@ -31,6 +31,7 @@ export default function CreateCourseForm() {
     setSubmitting(true);
 
     try {
+      //TODO: move this to api.ts
       await apiRequest("/api/courses", {
         method: "POST",
         headers: {
