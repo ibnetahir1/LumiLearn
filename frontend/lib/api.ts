@@ -87,11 +87,11 @@ export async function enrollStudent(courseId: string){
 export async function getCourseModules(courseId: string): Promise<Module[]> {
   const options = getHeaders();
 
-  return apiRequest<Module[]>(`api/courses/${courseId}/modules`, options);
+  return apiRequest<Module[]>(`/api/courses/${courseId}/modules`, options);
 }
 
 export async function CreateModule(courseId: string, request: CreateModuleRequest): Promise<Module[]> {
   const options = getHeaders("POST", JSON.stringify(request));
 
-  return apiRequest<Module[]>(`api/courses/${courseId}/modules`, options);
+  return apiRequest<Module[]>(`/api/courses/${courseId}/modules`, options);
 }

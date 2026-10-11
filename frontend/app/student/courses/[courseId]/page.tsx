@@ -1,7 +1,9 @@
 "use client";
 
-import { ApiError, enrollStudent, getAvailableCourses, getCourse } from "@/lib/api";
+import ModuleCard from "@/components/modules/ModuleCard";
+import { ApiError, enrollStudent, getAvailableCourses, getCourse, getCourseModules } from "@/lib/api";
 import { Course } from "@/types/course";
+import { Module } from "@/types/module";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -11,6 +13,7 @@ export default function StudentCourseDetailPage() {
   const courseId = params.courseId as string;
 
   const [course, setCourse] = useState<Course | null>(null);
+  const [modules, setModules] = useState<Module[]>([]);
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [isAvailable, setIsAvailable] = useState(false);
 
@@ -30,6 +33,7 @@ export default function StudentCourseDetailPage() {
           setCourse(enrolledCourse);
           setIsEnrolled(true);
           setIsAvailable(false);
+          loadModules();
           return;
         } catch (err) {
           // A 404 from the authorized course endpoint means
@@ -60,6 +64,15 @@ export default function StudentCourseDetailPage() {
         setError("Unable to load this course.");
       } finally {
         setLoading(false);
+      }
+    }
+
+    async function loadModules() {
+      try {
+        const modules = await getCourseModules(courseId);
+        setModules(modules);
+      } catch {
+        setError("Unable to load Modules.");
       }
     }
 
@@ -178,9 +191,18 @@ export default function StudentCourseDetailPage() {
           <section className="mt-10">
             <h2 className="text-xl font-semibold">Course Content</h2>
 
-            <div className="mt-4 rounded-lg border p-6 text-gray-600">
-              Modules and learning materials will appear here.
-            </div>
+            {modules.length === 0 && (
+              <div className="mt-4 rounded-lg border p-6 text-gray-600">
+                This course does not contain any modules.
+              </div>
+            )}
+
+            {modules.length > 0 && (
+              modules.map((module) => (
+                <ModuleCard key={module.id} module={module} />
+              ))
+            )}
+            
           </section>
         )}
       </div>

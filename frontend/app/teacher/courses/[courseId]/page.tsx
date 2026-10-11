@@ -1,7 +1,9 @@
 "use client";
 
-import { getCourse } from "@/lib/api";
+import ModuleCard from "@/components/modules/ModuleCard";
+import { getCourse, getCourseModules } from "@/lib/api";
 import { Course } from "@/types/course";
+import { Module } from "@/types/module";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -10,7 +12,8 @@ export default function TeacherCourseDetailPage() {
   const params = useParams();
   const courseId = params.courseId as string;
 
-const [course, setCourse] = useState<Course | null>(null);
+  const [course, setCourse] = useState<Course | null>(null);
+  const [modules, setModules] = useState<Module[]>([]);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -23,15 +26,33 @@ const [course, setCourse] = useState<Course | null>(null);
 
         const course = await getCourse(courseId);
         setCourse(course);
+        loadModules();
       } catch {
-        setError("Unable to load this course.")
+        setError("Unable to load this course.");
       } finally {
         setLoading(false);
       }
     }
 
+    async function loadModules() {
+      try {
+        const modules = await getCourseModules(courseId);
+        setModules(modules);
+      } catch {
+        setError("Unable to load Modules.");
+      }
+    }
+
     loadCourse();
   }, [courseId]);
+
+  if (loading) {
+    return (
+      <main className="p-6">
+        <p className="text-gray-600">Loading course...</p>
+      </main>
+    )
+  }
 
   if (error || !course) {
     return (
@@ -79,9 +100,20 @@ const [course, setCourse] = useState<Course | null>(null);
         <section className="mt-10">
           <h2 className="text-xl font-semibold">Course Content</h2>
 
-          <div className="mt-4 rounded-lg border p-6 text-gray-600">
-            Modules and learning materials will appear here.
-          </div>
+          {!loading && !error && modules.length === 0 && (
+            <div className="mt-4 rounded-lg border p-6 text-gray-600">
+              This course does not contain any modules.
+            </div>
+          )}
+
+          {!loading && !error && modules.length > 0 && (
+            <div className="">
+              {modules.map((module) => (
+                <ModuleCard key={module.id} module={module} />
+              ))}
+            </div>
+          )}
+          
         </section>
       </div>
     </main>
