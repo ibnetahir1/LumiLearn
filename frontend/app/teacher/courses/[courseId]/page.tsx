@@ -1,9 +1,8 @@
 "use client";
 
-import ModuleCard from "@/components/modules/ModuleCard";
-import { getCourse, getCourseModules } from "@/lib/api";
+import CourseModules from "@/components/modules/CourseModules";
+import { getCourse } from "@/lib/api";
 import { Course } from "@/types/course";
-import { Module } from "@/types/module";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,7 +12,6 @@ export default function TeacherCourseDetailPage() {
   const courseId = params.courseId as string;
 
   const [course, setCourse] = useState<Course | null>(null);
-  const [modules, setModules] = useState<Module[]>([]);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -26,20 +24,10 @@ export default function TeacherCourseDetailPage() {
 
         const course = await getCourse(courseId);
         setCourse(course);
-        loadModules();
       } catch {
         setError("Unable to load this course.");
       } finally {
         setLoading(false);
-      }
-    }
-
-    async function loadModules() {
-      try {
-        const modules = await getCourseModules(courseId);
-        setModules(modules);
-      } catch {
-        setError("Unable to load Modules.");
       }
     }
 
@@ -97,23 +85,26 @@ export default function TeacherCourseDetailPage() {
           {course.description || "No course description provided."}
         </p>
 
-        <section className="mt-10">
-          <h2 className="text-xl font-semibold">Course Content</h2>
-
-          {!loading && !error && modules.length === 0 && (
-            <div className="mt-4 rounded-lg border p-6 text-gray-600">
-              This course does not contain any modules.
+        <section className="mt-8">
+          <div className="mb-4 flex justify-between items-center">
+            <div>
+              <h2 className="text-xl font-semibold">Course Content</h2>
+              <p className="mt-1 text-sm text-gray-500">
+                Explore the modules in this course.
+              </p>
             </div>
-          )}
-
-          {!loading && !error && modules.length > 0 && (
-            <div className="">
-              {modules.map((module) => (
-                <ModuleCard key={module.id} module={module} />
-              ))}
+            
+            <div>
+              <Link
+                href={`./${courseId}/modules`}
+                className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
+              >
+                All Modules
+              </Link>
             </div>
-          )}
-          
+          </div>
+
+          <CourseModules />
         </section>
       </div>
     </main>

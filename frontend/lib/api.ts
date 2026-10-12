@@ -90,7 +90,7 @@ export async function getCourseModules(courseId: string): Promise<Module[]> {
   return apiRequest<Module[]>(`/api/courses/${courseId}/modules`, options);
 }
 
-export async function CreateModule(courseId: string, request: CreateModuleRequest): Promise<Module[]> {
+export async function createModule(courseId: string, request: CreateModuleRequest): Promise<Module[]> {
   const options = getHeaders("POST", JSON.stringify(request));
 
   return apiRequest<Module[]>(`/api/courses/${courseId}/modules`, options);

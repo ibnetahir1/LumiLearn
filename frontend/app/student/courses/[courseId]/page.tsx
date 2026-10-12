@@ -1,6 +1,6 @@
 "use client";
 
-import ModuleCard from "@/components/modules/ModuleCard";
+import CourseModules from "@/components/modules/CourseModules";
 import { ApiError, enrollStudent, getAvailableCourses, getCourse, getCourseModules } from "@/lib/api";
 import { Course } from "@/types/course";
 import { Module } from "@/types/module";
@@ -188,22 +188,7 @@ export default function StudentCourseDetailPage() {
         )}
 
         {isEnrolled && (
-          <section className="mt-10">
-            <h2 className="text-xl font-semibold">Course Content</h2>
-
-            {modules.length === 0 && (
-              <div className="mt-4 rounded-lg border p-6 text-gray-600">
-                This course does not contain any modules.
-              </div>
-            )}
-
-            {modules.length > 0 && (
-              modules.map((module) => (
-                <ModuleCard key={module.id} module={module} />
-              ))
-            )}
-            
-          </section>
+          <CourseModules />
         )}
       </div>
     </main>
