@@ -1,5 +1,7 @@
-﻿using LumiLearn.API.DTO.Courses;
+﻿using LumiLearn.API.Domain.Entities;
+using LumiLearn.API.DTO.Courses;
 using LumiLearn.API.DTO.Enrollments;
+using LumiLearn.API.DTO.Modules;
 using LumiLearn.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +16,13 @@ namespace LumiLearn.API.Controllers
     {
         private readonly CourseService _courseService;
         private readonly EnrollmentService _enrollmentService;
+        private readonly ModuleService _moduleService;
 
-        public CoursesController(CourseService courseService, EnrollmentService enrollmentService)
+        public CoursesController(CourseService courseService, EnrollmentService enrollmentService, ModuleService moduleService)
         {
             _courseService = courseService;
             _enrollmentService = enrollmentService;
+            _moduleService = moduleService;
         }
 
         [HttpGet]
@@ -116,6 +120,48 @@ namespace LumiLearn.API.Controllers
             }
 
             return Ok(course);
+        }
+
+        [HttpPost("{courseId}/modules")]
+        [Authorize(Roles = "Teacher")]
+        public async Task<ActionResult<ModuleResponse>> CreateModule(Guid courseId, CreateModuleRequest request)
+        {
+            var teacherId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (teacherId == null)
+            {
+                return Unauthorized();
+            }
+
+            var module = await _moduleService.CreateModuleAsync(teacherId, courseId, request);
+
+            if (module == null)
+            {
+                return NotFound();
+            }
+
+            return CreatedAtAction("CreateModule", module);
+        }
+
+        [HttpGet("{courseId}/modules")]
+        public async Task<ActionResult<List<ModuleResponse>>> GetAllModules(Guid courseId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var role = User.FindFirstValue(ClaimTypes.Role);
+
+            if (userId == null || role == null)
+            {
+                return Unauthorized();
+            }
+
+            var modules = await _moduleService.GetAllModulesAsync(userId, role, courseId);
+
+            if (modules == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(modules);
         }
     }
 }
