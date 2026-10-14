@@ -30,7 +30,6 @@ export default function DashboardPage() {
           }
         });
         setUser(currentUser);
-        console.log(currentUser);
       } catch {
         clearAccessToken();
         router.replace("/login");
