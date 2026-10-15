@@ -14,6 +14,7 @@ namespace LumiLearn.API.Data
         public DbSet<Course> Courses => Set<Course>();
         public DbSet<Enrollment> Enrollments => Set<Enrollment>();
         public DbSet<Module> Modules => Set<Module>();
+        public DbSet<Topic> Topics => Set<Topic>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -96,6 +97,28 @@ namespace LumiLearn.API.Data
                       .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasIndex(e => new { e.CourseId, e.DisplayOrder })
+                      .IsUnique();
+            });
+
+            builder.Entity<Topic>(entity =>
+            {
+                entity.HasKey(t => t.Id);
+
+                entity.Property(t => t.Name)
+                      .IsRequired()
+                      .HasMaxLength(200);
+
+                entity.Property(e => e.DisplayOrder)
+                      .IsRequired();
+
+                entity.HasOne(t => t.Module)
+                      .WithMany(m => m.Topics)
+                      .HasForeignKey(t => t.ModuleId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasIndex(t => t.ModuleId);
+
+                entity.HasIndex(e => new { e.ModuleId, e.DisplayOrder })
                       .IsUnique();
             });
         }
