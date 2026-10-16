@@ -26,7 +26,7 @@ export default function ModulesPage() {
       </div>
       
 
-      <CourseModules />
+      <CourseModules role="Teacher" />
     </main>
   );
 }

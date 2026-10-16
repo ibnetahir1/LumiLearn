@@ -188,7 +188,27 @@ export default function StudentCourseDetailPage() {
         )}
 
         {isEnrolled && (
-          <CourseModules />
+          <section className="mt-8">
+            <div className="mb-4 flex justify-between items-center">
+              <div>
+                <h2 className="text-xl font-semibold">Course Content</h2>
+                <p className="mt-1 text-sm text-gray-500">
+                  Explore the modules in this course.
+                </p>
+              </div>
+              
+              <div>
+                <Link
+                  href={`./${courseId}/modules`}
+                  className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
+                >
+                  All Modules
+                </Link>
+              </div>
+            </div>
+
+            <CourseModules role="Student" />
+          </section>
         )}
       </div>
     </main>
