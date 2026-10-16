@@ -2,6 +2,7 @@ import { Course } from "@/types/course";
 import { EnrollmentResponse } from "@/types/enrollment-response";
 import { getAccessToken } from "./auth";
 import { CreateModuleRequest, Module } from "@/types/module";
+import { RegisterRequest } from "@/types/register-request";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL;
@@ -47,17 +48,22 @@ export async function apiRequest<T>(
   return response.json();
 }
 
-function getHeaders(method?: string, body?: BodyInit): RequestInit {
-  const token = getAccessToken();
+function getHeaders(method?: string, body?: BodyInit, getToken: boolean = true): RequestInit {
+  const token = getToken ? getAccessToken() : null;
   const options = {
     method: method,
     headers: {
-      Authorization: `Bearer ${token}`
+      Authorization: token ? `Bearer ${token}` : ""
     },
     body: body
   };
 
   return options;
+}
+
+export async function register(request: RegisterRequest): Promise<Response> {
+  const options = getHeaders("POST", JSON.stringify(request), false);
+  return apiRequest("/api/auth/register", options);
 }
 
 export async function getCourses(): Promise<Course[]> {
@@ -76,11 +82,7 @@ export async function getAvailableCourses(): Promise<Course[]> {
 }
 
 export async function enrollStudent(courseId: string){
-  let options = getHeaders();
-  options = {
-    method: "POST",
-    ...options
-  }
+  let options = getHeaders("POST");
   return apiRequest<EnrollmentResponse>(`/api/courses/${courseId}/enroll`, options);
 }
 

@@ -1,11 +1,16 @@
 "use client";
 
+import { ApiError, register } from "@/lib/api";
+import { RegisterRequest } from "@/types/register-request";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, SubmitEvent } from "react";
 
 type Role = "Student" | "Teacher";
 
 export default function RegisterForm() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -14,7 +19,7 @@ export default function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  function handleSubmit(event: SubmitEvent<HTMLFormElement>): void {
+  async function handleSubmit(event: SubmitEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
 
     setError("");
@@ -32,15 +37,21 @@ export default function RegisterForm() {
     try {
       setIsLoading(true);
 
-      // We'll connect this to the ASP.NET API shortly.
-      console.log({
-        email,
-        password,
-        role,
-      });
+      const request: RegisterRequest = {
+        email: email,
+        password: password,
+        role: role
+      }
 
-    } catch {
-      setError("Something went wrong. Please try again.");
+      const response = await register(request);
+
+      router.replace("/login");
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
