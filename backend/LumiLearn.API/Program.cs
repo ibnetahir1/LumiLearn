@@ -65,6 +65,8 @@ builder.Services.AddScoped<EnrollmentService>();
 
 builder.Services.AddScoped<ModuleService>();
 
+builder.Services.AddScoped<TopicService>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowNextJS", policy =>

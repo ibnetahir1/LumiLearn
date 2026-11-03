@@ -3,6 +3,7 @@ import { EnrollmentResponse } from "@/types/enrollment-response";
 import { getAccessToken } from "./auth";
 import { CreateModuleRequest, Module } from "@/types/module";
 import { RegisterRequest } from "@/types/register-request";
+import { Topic } from "@/types/topic";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL;
@@ -96,4 +97,14 @@ export async function createModule(courseId: string, request: CreateModuleReques
   const options = getHeaders("POST", JSON.stringify(request));
 
   return apiRequest<Module[]>(`/api/courses/${courseId}/modules`, options);
+}
+
+export async function getTopics(moduleId: number): Promise<Topic[]> {
+  const options = getHeaders();
+  return apiRequest<Topic[]>(`/api/modules/${moduleId}/topics`, options);
+}
+
+export async function createTopic(moduleId: number, name: string): Promise<Topic> {
+  const options = getHeaders("POST", JSON.stringify({ name }));
+  return apiRequest<Topic>(`/api/modules/${moduleId}/topics`, options);
 }

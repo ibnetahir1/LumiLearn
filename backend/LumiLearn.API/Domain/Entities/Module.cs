@@ -8,5 +8,7 @@
         public string Description { get; set; } = string.Empty;
         public int DisplayOrder { get; set; }
         public Course Course { get; set; } = null!;
+        public ICollection<Topic> Topics { get; set; } = new List<Topic>();
+
     }
 }

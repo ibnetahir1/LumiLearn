@@ -1,11 +1,16 @@
 "use client";
 
 import { getCourseModules } from "@/lib/api";
-import type { Module } from "@/types/module";
+import { Module } from "@/types/module";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import TopicManager from "../topics/TopicManager";
 
-export default function CourseModules() {
+interface CourseModulesProps {
+  role: string;
+}
+
+export default function CourseModules({ role }: CourseModulesProps) {
   const params = useParams();
   const courseId = params.courseId as string;
   
@@ -75,6 +80,8 @@ export default function CourseModules() {
                   {module.description ||
                     "No description provided."}
                 </p>
+
+                <TopicManager moduleId={module.id} role={role} />
               </div>
             </article>
           ))}

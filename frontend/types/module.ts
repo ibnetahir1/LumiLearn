@@ -1,5 +1,5 @@
 export type Module = {
-  id: string;
+  id: number;
   courseId: string;
   title: string;
   description: string;

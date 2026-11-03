@@ -185,6 +185,33 @@ namespace LumiLearn.API.Migrations
                     b.ToTable("Modules");
                 });
 
+            modelBuilder.Entity("LumiLearn.API.Domain.Entities.Topic", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("ModuleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModuleId");
+
+                    b.HasIndex("ModuleId", "DisplayOrder")
+                        .IsUnique();
+
+                    b.ToTable("Topics");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -359,6 +386,17 @@ namespace LumiLearn.API.Migrations
                     b.Navigation("Course");
                 });
 
+            modelBuilder.Entity("LumiLearn.API.Domain.Entities.Topic", b =>
+                {
+                    b.HasOne("LumiLearn.API.Domain.Entities.Module", "Module")
+                        .WithMany("Topics")
+                        .HasForeignKey("ModuleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Module");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -422,6 +460,11 @@ namespace LumiLearn.API.Migrations
                     b.Navigation("Enrollments");
 
                     b.Navigation("Modules");
+                });
+
+            modelBuilder.Entity("LumiLearn.API.Domain.Entities.Module", b =>
+                {
+                    b.Navigation("Topics");
                 });
 #pragma warning restore 612, 618
         }
