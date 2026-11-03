@@ -11,5 +11,7 @@
         public int DisplayOrder { get; set; }
 
         public Module Module { get; set; } = null!;
+
+        public ICollection<Material> Materials { get; set; } = new List<Material>();
     }
 }

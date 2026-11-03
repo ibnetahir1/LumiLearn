@@ -17,7 +17,7 @@ namespace LumiLearn.API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.12")
+                .HasAnnotation("ProductVersion", "10.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -153,6 +153,80 @@ namespace LumiLearn.API.Migrations
                         .IsUnique();
 
                     b.ToTable("Enrollments");
+                });
+
+            modelBuilder.Entity("LumiLearn.API.Domain.Entities.Material", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FileName")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("StorageUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<Guid>("TopicId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TopicId", "DisplayOrder");
+
+                    b.ToTable("Materials");
+                });
+
+            modelBuilder.Entity("LumiLearn.API.Domain.Entities.MaterialProgress", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("MaterialId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("StartedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StudentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("MaterialId", "StudentId")
+                        .IsUnique();
+
+                    b.ToTable("MaterialProgress");
                 });
 
             modelBuilder.Entity("LumiLearn.API.Domain.Entities.Module", b =>
@@ -375,6 +449,36 @@ namespace LumiLearn.API.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("LumiLearn.API.Domain.Entities.Material", b =>
+                {
+                    b.HasOne("LumiLearn.API.Domain.Entities.Topic", "Topic")
+                        .WithMany("Materials")
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Topic");
+                });
+
+            modelBuilder.Entity("LumiLearn.API.Domain.Entities.MaterialProgress", b =>
+                {
+                    b.HasOne("LumiLearn.API.Domain.Entities.Material", "Material")
+                        .WithMany("ProgressRecords")
+                        .HasForeignKey("MaterialId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LumiLearn.API.Data.ApplicationUser", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Material");
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("LumiLearn.API.Domain.Entities.Module", b =>
                 {
                     b.HasOne("LumiLearn.API.Domain.Entities.Course", "Course")
@@ -462,9 +566,19 @@ namespace LumiLearn.API.Migrations
                     b.Navigation("Modules");
                 });
 
+            modelBuilder.Entity("LumiLearn.API.Domain.Entities.Material", b =>
+                {
+                    b.Navigation("ProgressRecords");
+                });
+
             modelBuilder.Entity("LumiLearn.API.Domain.Entities.Module", b =>
                 {
                     b.Navigation("Topics");
+                });
+
+            modelBuilder.Entity("LumiLearn.API.Domain.Entities.Topic", b =>
+                {
+                    b.Navigation("Materials");
                 });
 #pragma warning restore 612, 618
         }

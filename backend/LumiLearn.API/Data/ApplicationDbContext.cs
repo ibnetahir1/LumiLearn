@@ -15,6 +15,8 @@ namespace LumiLearn.API.Data
         public DbSet<Enrollment> Enrollments => Set<Enrollment>();
         public DbSet<Module> Modules => Set<Module>();
         public DbSet<Topic> Topics => Set<Topic>();
+        public DbSet<Material> Materials => Set<Material>();
+        public DbSet<MaterialProgress> MaterialProgress => Set<MaterialProgress>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -120,6 +122,73 @@ namespace LumiLearn.API.Data
 
                 entity.HasIndex(e => new { e.ModuleId, e.DisplayOrder })
                       .IsUnique();
+            });
+
+            builder.Entity<Material>(entity =>
+            {
+                entity.HasKey(m => m.Id);
+
+                entity.Property(m => m.Type)
+                      .IsRequired();
+
+                entity.Property(m => m.Title)
+                      .IsRequired()
+                      .HasMaxLength(200);
+
+                entity.Property(m => m.Description)
+                      .HasMaxLength(2000);
+
+                entity.Property(m => m.StorageUrl)
+                      .HasMaxLength(500);
+
+                entity.Property(m => m.FileName)
+                      .HasMaxLength(255);
+
+                entity.Property(m => m.CreatedAt)
+                      .IsRequired();
+
+                entity.Property(m => m.DisplayOrder)
+                      .IsRequired();
+
+                entity.HasOne(m => m.Topic)
+                      .WithMany(t => t.Materials)
+                      .HasForeignKey(m => m.TopicId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasIndex(m => new
+                {
+                    m.TopicId,
+                    m.DisplayOrder
+                });
+            });
+
+            builder.Entity<MaterialProgress>(entity =>
+            {
+                entity.HasKey(mp => mp.Id);
+
+                entity.Property(mp => mp.StudentId)
+                      .IsRequired();
+
+                entity.Property(mp => mp.Status)
+                      .IsRequired();
+
+                entity.HasOne(mp => mp.Material)
+                      .WithMany(m => m.ProgressRecords)
+                      .HasForeignKey(mp => mp.MaterialId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(mp => mp.Student)
+                      .WithMany()
+                      .HasForeignKey(mp => mp.StudentId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // One progress record per student per material.
+                entity.HasIndex(mp => new
+                {
+                    mp.MaterialId,
+                    mp.StudentId
+                })
+                .IsUnique();
             });
         }
     }
